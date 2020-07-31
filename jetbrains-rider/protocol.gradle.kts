@@ -1,22 +1,33 @@
 // Copyright 2019 Amazon.com, Inc. or its affiliates. All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
-import com.jetbrains.rd.generator.gradle.RdgenPlugin
+import groovy.lang.Closure
+import com.jetbrains.rd.generator.gradle.RdgenTask
+import com.jetbrains.rd.generator.gradle.RdgenParams
+
+plugins {
+    id("java")
+    kotlin("jvm")
+    id("com.jetbrains.rdgen")
+}
 
 val protocolGroup = "protocol"
 
-ext.csDaemonGeneratedOutput = File(resharperPluginPath, "src/AWS.Daemon/Protocol")
-ext.csPsiGeneratedOutput = File(resharperPluginPath, "src/AWS.Psi/Protocol")
-ext.csAwsSettingGeneratedOutput = File(resharperPluginPath, "src/AWS.Settings/Protocol")
-ext.csAwsProjectGeneratedOutput = File(resharperPluginPath, "src/AWS.Project/Protocol")
-ext.riderGeneratedSources = "$buildDir/generated-src/software/aws/toolkits/jetbrains/protocol"
+val resharperPluginPath: File by project.extra
+val rdGenVersion: Closure<String> by project.extra
 
-ext.modelDir = File(projectDir, "protocol/model")
-ext.rdgenDir = file("${project.buildDir}/rdgen/")
+val csDaemonGeneratedOutput = File(resharperPluginPath, "src/AWS.Daemon/Protocol")
+val csPsiGeneratedOutput = File(resharperPluginPath, "src/AWS.Psi/Protocol")
+val csAwsSettingGeneratedOutput = File(resharperPluginPath, "src/AWS.Settings/Protocol")
+val csAwsProjectGeneratedOutput = File(resharperPluginPath, "src/AWS.Project/Protocol")
+val riderGeneratedSources = "$buildDir/generated-src/software/aws/toolkits/jetbrains/protocol"
+
+val modelDir = File(projectDir, "protocol/model")
+val rdgenDir = File("${project.buildDir}/rdgen/")
+
 rdgenDir.mkdirs()
 
-// tasks.getByName("rdgen").class
-tasks.register<RdgenPlugin>("generateDaemonModel") {
+tasks.register("generateDaemonModel", tasks.getByName("rdgen").javaClass) {
     val daemonModelSource = File(modelDir, "daemon").canonicalPath
     val ktOutput = File(riderGeneratedSources, "DaemonProtocol")
 
@@ -59,8 +70,10 @@ tasks.register<RdgenPlugin>("generateDaemonModel") {
     }
 }
 
-// tasks.getByName("rdgen")
-tasks.register<RdgenPlugin>("generatePsiModel") {
+tasks {
+val generatePsiModel by creating(RdgenTask::class) {
+//tasks.register("generatePsiModel", tasks.getByName("rdgen").javaClass) {
+    configure<RdgenParams> {
     val psiModelSource = File(modelDir, "psi").canonicalPath
     val ktOutput = File(riderGeneratedSources, "PsiProtocol")
 
@@ -101,10 +114,9 @@ tasks.register<RdgenPlugin>("generatePsiModel") {
             directory = "$csPsiGeneratedOutput"
         }
     }
-}
+}}}
 
-// tasks.getByName("rdgen")
-tasks.register<RdgenPlugin>("generateAwsSettingModel") {
+tasks.register("generateAwsSettingModel", tasks.getByName("rdgen").javaClass) {
     val settingModelSource = File(modelDir, "setting").canonicalPath
     val ktOutput = File(riderGeneratedSources, "AwsSettingsProtocol")
 
@@ -147,8 +159,7 @@ tasks.register<RdgenPlugin>("generateAwsSettingModel") {
     }
 }
 
-// tasks.getByName("rdgen")
-tasks.register<RdgenPlugin>("generateAwsProjectModel") {
+tasks.register("generateAwsProjectModel", tasks.getByName("rdgen").javaClass) {
     val projectModelSource = File(modelDir, "project").canonicalPath
     val ktOutput = File(riderGeneratedSources, "AwsProjectProtocol")
 

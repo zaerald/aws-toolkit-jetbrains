@@ -4,6 +4,8 @@
 import groovy.lang.Closure
 import org.jetbrains.intellij.IntelliJPluginExtension
 import org.jetbrains.intellij.tasks.PrepareSandboxTask
+import com.jetbrains.rd.generator.gradle.RdgenTask
+import com.jetbrains.rd.generator.gradle.RdgenParams
 
 apply(from = "../intellijJVersions.gradle")
 
