@@ -1,21 +1,24 @@
 // Copyright 2019 Amazon.com, Inc. or its affiliates. All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
-def protocolGroup = 'protocol'
+import com.jetbrains.rd.generator.gradle.RdgenPlugin
 
-ext.csDaemonGeneratedOutput = new File(resharperPluginPath, "src/AWS.Daemon/Protocol")
-ext.csPsiGeneratedOutput = new File(resharperPluginPath, "src/AWS.Psi/Protocol")
-ext.csAwsSettingGeneratedOutput = new File(resharperPluginPath, "src/AWS.Settings/Protocol")
-ext.csAwsProjectGeneratedOutput = new File(resharperPluginPath, "src/AWS.Project/Protocol")
+val protocolGroup = "protocol"
+
+ext.csDaemonGeneratedOutput = File(resharperPluginPath, "src/AWS.Daemon/Protocol")
+ext.csPsiGeneratedOutput = File(resharperPluginPath, "src/AWS.Psi/Protocol")
+ext.csAwsSettingGeneratedOutput = File(resharperPluginPath, "src/AWS.Settings/Protocol")
+ext.csAwsProjectGeneratedOutput = File(resharperPluginPath, "src/AWS.Project/Protocol")
 ext.riderGeneratedSources = "$buildDir/generated-src/software/aws/toolkits/jetbrains/protocol"
 
-ext.modelDir = new File(projectDir, "protocol/model")
+ext.modelDir = File(projectDir, "protocol/model")
 ext.rdgenDir = file("${project.buildDir}/rdgen/")
 rdgenDir.mkdirs()
 
-task generateDaemonModel(type: tasks.getByName("rdgen").class) {
-    def daemonModelSource = new File(modelDir, "daemon").canonicalPath
-    def ktOutput = new File(riderGeneratedSources, "DaemonProtocol")
+// tasks.getByName("rdgen").class
+tasks.register<RdgenPlugin>("generateDaemonModel") {
+    val daemonModelSource = File(modelDir, "daemon").canonicalPath
+    val ktOutput = File(riderGeneratedSources, "DaemonProtocol")
 
     inputs.property("rdgen", rdGenVersion())
     inputs.dir(daemonModelSource)
@@ -30,8 +33,8 @@ task generateDaemonModel(type: tasks.getByName("rdgen").class) {
         logger.info("Configuring rdgen params")
         classpath {
             logger.info("Calculating classpath for rdgen, intellij.ideaDependency is: ${intellij.ideaDependency}")
-            def sdkPath = intellij.ideaDependency.classes
-            def rdLibDirectory = new File(sdkPath, "lib/rd").canonicalFile
+            val sdkPath = intellij.ideaDependency.classes
+            val rdLibDirectory = File(sdkPath, "lib/rd").canonicalFile
 
             "$rdLibDirectory/rider-model.jar"
         }
@@ -56,9 +59,10 @@ task generateDaemonModel(type: tasks.getByName("rdgen").class) {
     }
 }
 
-task generatePsiModel(type: tasks.getByName("rdgen").class) {
-    def psiModelSource = new File(modelDir, "psi").canonicalPath
-    def ktOutput = new File(riderGeneratedSources, "PsiProtocol")
+// tasks.getByName("rdgen")
+tasks.register<RdgenPlugin>("generatePsiModel") {
+    val psiModelSource = File(modelDir, "psi").canonicalPath
+    val ktOutput = File(riderGeneratedSources, "PsiProtocol")
 
     inputs.property("rdgen", rdGenVersion())
     inputs.dir(psiModelSource)
@@ -73,8 +77,8 @@ task generatePsiModel(type: tasks.getByName("rdgen").class) {
         logger.info("Configuring rdgen params")
         classpath {
             logger.info("Calculating classpath for rdgen, intellij.ideaDependency is: ${intellij.ideaDependency}")
-            def sdkPath = intellij.ideaDependency.classes
-            def rdLibDirectory = new File(sdkPath, "lib/rd").canonicalFile
+            val sdkPath = intellij.ideaDependency.classes
+            val rdLibDirectory = File(sdkPath, "lib/rd").canonicalFile
 
             "$rdLibDirectory/rider-model.jar"
         }
@@ -99,9 +103,10 @@ task generatePsiModel(type: tasks.getByName("rdgen").class) {
     }
 }
 
-task generateAwsSettingModel(type: tasks.getByName("rdgen").class) {
-    def settingModelSource = new File(modelDir, "setting").canonicalPath
-    def ktOutput = new File(riderGeneratedSources, "AwsSettingsProtocol")
+// tasks.getByName("rdgen")
+tasks.register<RdgenPlugin>("generateAwsSettingModel") {
+    val settingModelSource = File(modelDir, "setting").canonicalPath
+    val ktOutput = File(riderGeneratedSources, "AwsSettingsProtocol")
 
     inputs.property("rdgen", rdGenVersion())
     inputs.dir(settingModelSource)
@@ -116,8 +121,8 @@ task generateAwsSettingModel(type: tasks.getByName("rdgen").class) {
         logger.info("Configuring rdgen params")
         classpath {
             logger.info("Calculating classpath for rdgen, intellij.ideaDependency is: ${intellij.ideaDependency}")
-            def sdkPath = intellij.ideaDependency.classes
-            def rdLibDirectory = new File(sdkPath, "lib/rd").canonicalFile
+            val sdkPath = intellij.ideaDependency.classes
+            val rdLibDirectory = File(sdkPath, "lib/rd").canonicalFile
 
             "$rdLibDirectory/rider-model.jar"
         }
@@ -142,9 +147,10 @@ task generateAwsSettingModel(type: tasks.getByName("rdgen").class) {
     }
 }
 
-task generateAwsProjectModel(type: tasks.getByName("rdgen").class) {
-    def projectModelSource = new File(modelDir, "project").canonicalPath
-    def ktOutput = new File(riderGeneratedSources, "AwsProjectProtocol")
+// tasks.getByName("rdgen")
+tasks.register<RdgenPlugin>("generateAwsProjectModel") {
+    val projectModelSource = File(modelDir, "project").canonicalPath
+    val ktOutput = File(riderGeneratedSources, "AwsProjectProtocol")
 
     inputs.property("rdgen", rdGenVersion())
     inputs.dir(projectModelSource)
@@ -159,8 +165,8 @@ task generateAwsProjectModel(type: tasks.getByName("rdgen").class) {
         logger.info("Configuring rdgen params")
         classpath {
             logger.info("Calculating classpath for rdgen, intellij.ideaDependency is: ${intellij.ideaDependency}")
-            def sdkPath = intellij.ideaDependency.classes
-            def rdLibDirectory = new File(sdkPath, "lib/rd").canonicalFile
+            val sdkPath = intellij.ideaDependency.classes
+            val rdLibDirectory = File(sdkPath, "lib/rd").canonicalFile
 
             "$rdLibDirectory/rider-model.jar"
         }
@@ -187,15 +193,15 @@ task generateAwsProjectModel(type: tasks.getByName("rdgen").class) {
 
 task generateModels {
     group = protocolGroup
-    description = 'Generates protocol models'
+    description = "Generates protocol models"
 
-    dependsOn generateDaemonModel, generatePsiModel, generateAwsSettingModel, generateAwsProjectModel
+    dependsOn(generateDaemonModel, generatePsiModel, generateAwsSettingModel, generateAwsProjectModel)
 }
 
 task cleanGenerateModels {
     group = protocolGroup
-    description = 'Clean up generated protocol models'
+    description = "Clean up generated protocol models"
 
-    dependsOn cleanGenerateDaemonModel, cleanGeneratePsiModel, cleanGenerateAwsSettingModel, cleanGenerateAwsProjectModel
+    dependsOn(cleanGenerateDaemonModel, cleanGeneratePsiModel, cleanGenerateAwsSettingModel, cleanGenerateAwsProjectModel)
 }
 project.tasks.clean.dependsOn(cleanGenerateModels)

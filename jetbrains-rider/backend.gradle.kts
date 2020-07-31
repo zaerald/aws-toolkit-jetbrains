@@ -1,7 +1,7 @@
 // Copyright 2019 Amazon.com, Inc. or its affiliates. All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
-def backendGroup = 'backend'
+val backendGroup = "backend"
 
 task prepareBuildProps {
     def riderSdkVersionPropsPath = new File(resharperPluginPath, "RiderSdkPackageVersion.props")
